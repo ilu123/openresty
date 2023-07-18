@@ -6,12 +6,14 @@
 
 1. Run the container:
 ```shell
-docker run --name test -e AWS_ACCESS_KEY_ID='xxxxxx' -e AWS_SECRET_ACCESS_KEY='xxxxxx' -e S3_BUCKET_NAME='xxxxxxx' -e AWS_S3_ENDPOINT='s3.amazonaws.com' -e AWS_S3_REGION='us-northeast-1' macrozhao/openresty
+docker run --name proxy-s3 --restart=always -e AWS_ACCESS_KEY_ID='xxxxxx' -e AWS_SECRET_ACCESS_KEY='xxxxxx' -e S3_BUCKET_NAME='xxxxxxx' -e AWS_S3_ENDPOINT='s3.amazonaws.com' -e AWS_S3_REGION='us-northeast-1' -v path_to_server_confs:/opt/bitnami/openresty/nginx/conf/server_blocks macrozhao/openresty
 ```
 
-2. To use this feature, you need to configure your `nginx.conf` like belowings:
+2. To use this feature, you need to configure your `server.conf` like belowings:
 ```
     server {
+        listen  8080;
+        
         location /test.txt {
             content_by_lua_block {
                 local s3_client = require "resty.aws_s3.client"
